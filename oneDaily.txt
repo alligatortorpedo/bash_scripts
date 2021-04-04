@@ -1,0 +1,65 @@
+#!/bin/bash
+
+x=0
+while [ $x = 0 ]
+do
+clear
+#FILE="/Path/to/file/named/dailyMemories.txt"
+FILE="/Users/mike/Desktop/test_memory.txt"
+
+numLines=$(<"$FILE" wc -l)
+
+# picks a random memory and displays it
+(( b  = (1 + RANDOM % numLines) ))
+
+echo "Random Memory:"
+# first $b lines piped over to tail to get last line 
+head -n "$b" $FILE | tail -n 1
+
+echo
+echo "New Memory:"
+echo "Is this for (t)oday, (y)esterday or some (o)ther day? (t/y/o)"
+read respDate
+
+case $respDate in
+  t)
+  echo "Today is $(date +%Y-%m-%d)"
+  memDate=$(date +%Y-%m-%d)
+  x=1
+  ;;
+  y)
+  echo "Yesterday was $(date -j -v-1d +%Y-%m-%d)"
+  memDate=$(date -j -v-1d +%Y-%m-%d)
+  x=1
+  ;;
+  o)
+  clear
+  echo "Which date is this for? (yyyy-mm-dd)"
+  read otherDate
+  #echo "This is for $otherDate"
+  memDate=$otherDate
+  x=1
+  ;;
+  *)
+  clear
+  echo "That is not an option. Try again!"
+  sleep 3
+esac
+done
+
+#checks to see if you already have a memory for the date
+if grep -q $memDate $FILE; then
+   echo "You already have a memory for this date! (CTRL+C to exit)"
+else
+   echo "Ok, go forth!"
+fi
+
+
+#records the memory from your input
+echo "Which memory would you like to record?"
+read -r memRecord
+
+echo "Writing to \"$FILE\"..."
+#echo "$memDate : $memRecord" >> /Path/to/file/named/dailyMemories.txt
+echo "$memDate : $memRecord" >> $FILE
+sleep 1
