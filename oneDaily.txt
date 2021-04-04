@@ -60,6 +60,5 @@ echo "Which memory would you like to record?"
 read -r memRecord
 
 echo "Writing to \"$FILE\"..."
-#echo "$memDate : $memRecord" >> /Path/to/file/named/dailyMemories.txt
 echo "$memDate : $memRecord" >> $FILE
 sleep 1
